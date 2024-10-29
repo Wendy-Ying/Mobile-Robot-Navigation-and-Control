@@ -1,0 +1,3 @@
+*.cmake linguist-language=CMake
+*.py linguist-language=Python
+*.cmake linguist-detectable=false
