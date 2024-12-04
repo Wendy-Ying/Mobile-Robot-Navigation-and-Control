@@ -6,6 +6,8 @@ Lab homework of Mobile Robot Navigation and Control
 - Lab2. Use of ROS
 - Lab3. Use of Turtlebot3 and LDS
 - Lab4. Homing
+- Lab5. Navigation
+- Lab6. Homing & Navigation
 
 
 ## Contributors
