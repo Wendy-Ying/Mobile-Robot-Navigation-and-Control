@@ -1,12 +1,10 @@
 #!/usr/bin/env python
-
 import rospy
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool
 import numpy as np
 import time
-
 
 class Detector:
     def __init__(self):
@@ -63,7 +61,7 @@ class Detector:
                 if self.stable_count > 2:
                     self.count = 0
                     rospy.loginfo("Stable detection!")
-                    
+
         # Update the last detected target
         self.last_angle = min_angle
         self.last_distance = min_distance
@@ -101,10 +99,8 @@ class Detector:
             self.pub.publish(twist)
             rospy.loginfo(f"Angle: {angle}, Distance: {distance if distance is not None else 'None'}")
 
-
 def talker():
     # Publisher to notify when the robot reaches the goal
-    rospy.init_node('goto_talker', anonymous=True)
     pub = rospy.Publisher('goto', Bool, queue_size=10)
     rate = rospy.Rate(1)  # 1Hz
 
@@ -114,14 +110,6 @@ def talker():
         pub.publish(msg)
         rate.sleep()
 
-
-def listener():
-    # Initialize listener node to subscribe to "find_pole" topic
-    rospy.init_node('find_pole_listener', anonymous=True)
-    rospy.Subscriber("find_pole", Bool, callback)
-    rospy.spin()
-
-
 def callback(data):
     if data.data:
         rospy.loginfo("Received find_pole: True")
@@ -130,12 +118,15 @@ def callback(data):
         except rospy.ROSInterruptException:
             pass
 
+def listener():
+    # Subscribe to "find_pole" topic
+    rospy.Subscriber("find_pole", Bool, callback)
+    rospy.spin()
 
 def main():
-    # Initialize main node to start the listener
+    # Initialize the main node only once
     rospy.init_node('detect_pole', anonymous=True)
     listener()
-
 
 if __name__ == '__main__':
     main()

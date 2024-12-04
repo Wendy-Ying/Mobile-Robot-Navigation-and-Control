@@ -24,11 +24,11 @@ def movebase_client(x, y, w):
         rospy.logerr("Action server not available!")
         rospy.signal_shutdown("Action server not available!")
     else:
+        talker()  # Trigger the talker once the goal is reached
         return client.get_result()
 
 # Publisher to notify when the robot reaches the goal
 def talker():
-    rospy.init_node('find_pole_talker', anonymous=True)
     pub = rospy.Publisher('find_pole', Bool, queue_size=10)
     rate = rospy.Rate(1)  # 1Hz
 
@@ -44,8 +44,8 @@ def goto_callback(msg):
 
     if msg.data:  # If True, change the target position
         if goto_counter == 0:
-            rospy.loginfo("Moving to first position (-1.1, 0.4, 1.0)")
-            movebase_client(-1.1, 0.4, 1.0)
+            rospy.loginfo("Moving to first position (-3.32, -1.72, 1.0)")
+            movebase_client(-3.32, -1.72, 1.0)
         elif goto_counter == 1:
             rospy.loginfo("Moving to second position (1, 1, 1)")
             movebase_client(1, 1, 1)
@@ -60,7 +60,9 @@ def movebase_node():
     goto_counter = 0  # Initialize the counter to control the sequence of movements
 
     # Initialize the ROS node
-    rospy.init_node('movebase_client_py')
+    rospy.init_node('movebase_client')
+
+    goto_callback(Bool(data=True))  # Trigger the first movement
 
     # Subscribe to the "goto" topic
     rospy.Subscriber('goto', Bool, goto_callback)
