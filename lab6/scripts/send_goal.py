@@ -48,10 +48,10 @@ def goto_callback(msg):
             movebase_client(-3.32, -1.72, 1.0)
         elif goto_counter == 1:
             rospy.loginfo("Moving to second position (1, 1, 1)")
-            movebase_client(1, 1, 1)
+            movebase_client(-0.29, 0.13, 1.0)
         elif goto_counter == 2:
             rospy.loginfo("Moving to third position (2, 2, 0.5)")
-            movebase_client(2, 2, 0.5)
+            movebase_client(-3.31, 1.66, 1.0)
 
         goto_counter += 1
 
