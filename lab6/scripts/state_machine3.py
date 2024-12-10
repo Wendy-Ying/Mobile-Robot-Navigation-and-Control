@@ -27,8 +27,10 @@ def main():
     target_positions = [
         (-4.39, -1.22),  # 目标1
         (-3.09, -1.65),  # 目标2
-        (-2.68, -0.25),   # 目标3
-        (-1.11, 0.66),    # 目标4
+        (-1.11, 0.66),  # 目标3
+        #(-2.68, -0.25),   
+        (-0.51, -0.25), # 目标4
+        # (-1.11, 0.66),    
         (-1.95, 0.99),  # 目标5
         (-3.31, 1.66)    # 目标6
     ]
@@ -42,7 +44,7 @@ def main():
             # 状态1：移动到目标位置
             success = False
             attempt = 0
-            max_attempts = 5  # 最大尝试次数，可根据需要调整
+            max_attempts = 100  # 最大尝试次数，可根据需要调整
             while not success and attempt < max_attempts:
                 result = movebase_client(goal_x, goal_y)
                 if result:
