@@ -4,8 +4,8 @@ import rospy
 import time
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from tf.transformations import quaternion_from_euler
-from movebase3 import movebase_client
-from find_pillar3 import find_pillar
+from movebase import movebase_client
+from find_pillar import find_pillar
 
 def get_current_pose():
     # 获取机器人当前位姿
@@ -23,20 +23,14 @@ def main():
     init_x, init_y, init_orientation = get_current_pose()
     rospy.loginfo("Initial position: x = {:.2f}, y = {:.2f}".format(init_x, init_y))
 
-    # 获取目标位置列表（输入参数）
-    import sys
-    if len(sys.argv) != 13:
-        rospy.loginfo("Usage: state_machine.py x1 y1 x2 y2 x3 y3 x4 y4 x5 y5 x6 y6")
-        sys.exit(1)
-    
-    # 读取6个目标点
+    # 硬编码6个目标位置
     target_positions = [
-        (float(sys.argv[1]), float(sys.argv[2])),
-        (float(sys.argv[3]), float(sys.argv[4])),
-        (float(sys.argv[5]), float(sys.argv[6])),
-        (float(sys.argv[7]), float(sys.argv[8])),
-        (float(sys.argv[9]), float(sys.argv[10])),
-        (float(sys.argv[11]), float(sys.argv[12]))
+        (-1.8, 1.0),  # 目标1
+        (-2.0, 0.0),  # 目标2
+        (1.8, 1.0),   # 目标3
+        (2.0, 0.0),    # 目标4
+        (-1.8, -1.0),  # 目标5
+        (1.8, -1.0)    # 目标6
     ]
 
     # 每经过两个目标点执行一次find_pillar
