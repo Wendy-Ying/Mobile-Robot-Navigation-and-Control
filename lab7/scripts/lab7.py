@@ -10,43 +10,42 @@ import time
 import math
 import tf
 
-class Move:
-    # MoveBase Navigation
-    def movebase_client(self, x, y, z=0, w=0):
-        client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-        client.wait_for_server()
+# MoveBase Navigation
+def movebase_client(x, y, z=0, w=0):
+    client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+    client.wait_for_server()
 
-        if z != 0 or w != 0:
-            z, w = self.calculate_orientation(x, y)
+    if z == 0 or w == 0:
+        z, w = calculate_orientation(x, y)
 
-        goal = MoveBaseGoal()
-        goal.target_pose.header.frame_id = "map"
-        goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = x
-        goal.target_pose.pose.position.y = y
-        goal.target_pose.pose.orientation.w = w
-        goal.target_pose.pose.orientation.z = z
+    goal = MoveBaseGoal()
+    goal.target_pose.header.frame_id = "map"
+    goal.target_pose.header.stamp = rospy.Time.now()
+    goal.target_pose.pose.position.x = x
+    goal.target_pose.pose.position.y = y
+    goal.target_pose.pose.orientation.w = w
+    goal.target_pose.pose.orientation.z = z
 
-        client.send_goal(goal)
-        wait = client.wait_for_result()
-        if not wait:
-            rospy.logerr("Action server not available!")
-            rospy.signal_shutdown("Action server not available!")
-            return False
-        else:
-            return True
+    client.send_goal(goal)
+    wait = client.wait_for_result()
+    if not wait:
+        rospy.logerr("Action server not available!")
+        rospy.signal_shutdown("Action server not available!")
+        return False
+    else:
+        return True
 
-    def calculate_orientation(self, x, y):
-        listener = tf.TransformListener()
-        listener.waitForTransform("/map", "/base_link", rospy.Time(0), rospy.Duration(5.0))
-        (trans, _) = listener.lookupTransform("/map", "/base_link", rospy.Time(0))
-        current_x, current_y = trans[0], trans[1]
-        dx = x - current_x
-        dy = y - current_y
-        yaw = math.atan2(dy, dx)
-        from tf.transformations import quaternion_from_euler
-        quat = quaternion_from_euler(0, 0, yaw)
-        return quat[2], quat[3]
+def calculate_orientation(x, y):
+    listener = tf.TransformListener()
+    listener.waitForTransform("/map", "/base_link", rospy.Time(0), rospy.Duration(5.0))
+    (trans, _) = listener.lookupTransform("/map", "/base_link", rospy.Time(0))
+    current_x, current_y = trans[0], trans[1]
+    dx = x - current_x
+    dy = y - current_y
+    yaw = math.atan2(dy, dx)
+    from tf.transformations import quaternion_from_euler
+    quat = quaternion_from_euler(0, 0, yaw)
+    return quat[2], quat[3]
 
 # Pole Detection Logic
 class Detector:
@@ -57,7 +56,7 @@ class Detector:
     def find_direction(self):
         msg = rospy.wait_for_message("scan", LaserScan)
         r = np.array(msg.ranges)
-        r[r < 0.01] = 1000000  # Ignore invalid data, set to a large value
+        r[r < 0.05] = 1000000  # Ignore invalid data, set to a large value
 
         sorted_indices = np.argsort(r)
         for idx in sorted_indices:
@@ -126,13 +125,13 @@ def global_planner():
     current_x, current_y = trans[0], trans[1]
 
     waypoints = [
-        ("via", [(-4.39, -1.22)]),
+        ("via", [(-4.73, -1.15, -0.34, 0.93)]),
         ("goal", [(-3.09, -1.65)]),
         ("via", [(-2.14, 0.70)]),
         ("goal", [(-0.42, 0.06)]),
         ("goal", [(-2.94, 1.57)]),
-        ("via", [(-2.49, 0.23)]),
-        ("via", [(-3.80, -1.68, 0.23, 0.97)]),
+        ("via", [(-2.19, 0.66)]),
+        ("via", [(-3.80, -1.68, 0.97, 0.23)]),
         ("via", [(current_x, current_y)])
     ]
 
@@ -140,7 +139,7 @@ def global_planner():
         rospy.loginfo(f"Executing {wp_type} points for waypoint {idx + 1}")
 
         for wp in points:
-            result = Move().movebase_client(*wp)
+            result = movebase_client(*wp)
             if not result:
                 rospy.logerr(f"Failed to reach point {wp}")
                 return
