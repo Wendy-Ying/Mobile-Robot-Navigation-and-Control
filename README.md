@@ -9,7 +9,7 @@ Lab homework of Mobile Robot Navigation and Control
 - Lab5. Navigation
 - Lab6. Homing & Navigation
 
-final result: (five time faster version)
+final result: (five times faster version)
 
 ![lab7](lab7.gif)
 
