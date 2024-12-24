@@ -11,7 +11,7 @@ Lab homework of Mobile Robot Navigation and Control
 
 final result:
 
-![](final.gif)
+![ ](final.gif)
 
 ## Contributors
 
