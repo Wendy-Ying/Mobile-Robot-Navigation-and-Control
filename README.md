@@ -9,7 +9,7 @@ Lab homework of Mobile Robot Navigation and Control
 - Lab5. Navigation
 - Lab6. Homing & Navigation
 
-[final result:](https://github.com/Wendy-Ying/Mobile-Robot-Navigation-and-Control-Lab/blob/main/lab7/scripts/lab7.py)
+[final result:](https://github.com/Wendy-Ying/Mobile-Robot-Navigation-and-Control-Lab/blob/main/lab7/scripts/lab7.py) (1min57seconds, rank 1st!)
 
 ![ ](final.gif)
 
